@@ -1,0 +1,44 @@
+// Prisma schema for forum
+// File: backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  username     String   @unique @default("")
+  passwordHash String
+  createdAt    DateTime @default(now())
+  posts        Post[]
+  replies      Reply[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  replies   Reply[]
+  createdAt DateTime @default(now())
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  body      String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  parent    Reply?   @relation("ReplyToReply", fields: [parentId], references: [id])
+  parentId  Int?
+  replies   Reply[]  @relation("ReplyToReply")
+  createdAt DateTime @default(now())
+}
