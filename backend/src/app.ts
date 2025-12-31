@@ -18,6 +18,11 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/posts', postsRoutes);
 
+// Health check endpoint
+app.get('/health', (_req: express.Request, res: express.Response) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err);

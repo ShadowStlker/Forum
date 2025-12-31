@@ -15,7 +15,7 @@ interface Post {
   id: number;
   title: string;
   body: string;
-  author: { email: string; username: string };
+  author: { id: number; email: string; username: string };
   createdAt: string;
   replies: Reply[];
 }
@@ -257,15 +257,15 @@ React.useEffect(() => {
     );
   }
 
-return (
-  <div>
-    {editingPost && (
-      <EditPostModal
-        post={editingPost}
-        onClose={() => setEditingPost(null)}
-        onSuccess={fetchPosts}
-      />
-    )}
+  return (
+    <div>
+      {editingPost && (
+        <EditPostModal
+          post={editingPost}
+          onClose={() => setEditingPost(null)}
+          onSuccess={fetchPosts}
+        />
+      )}
 
       {error && (
         <div className="mb-4 p-4 bg-red-900/30 border border-red-800 rounded-lg flex items-center gap-3">
@@ -346,16 +346,17 @@ return (
         </div>
       )}
 
-<div className="flex items-center justify-between mb-6">
-  <h1 className="text-3xl font-bold text-white">Recent Posts</h1>
-  <input
-    type="text"
-    value={searchTerm}
-    onChange={e => setSearchTerm(e.target.value)}
-    placeholder="Search posts..."
-    className="bg-gray-800 text-white border border-gray-700 rounded-md px-9 py-4 text-xl placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64"
-  />
-</div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-white">Recent Posts</h1>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          placeholder="Search posts..."
+          className="bg-gray-800 text-white border border-gray-700 rounded-md px-4 py-4 text-xl placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64"
+        />
+      </div>
+
       {posts.length === 0 ? (
         <div className="bg-gray-800 rounded-xl p-12 text-center border border-gray-700 shadow-sm mb-24">
           <svg className="w-16 h-16 mx-auto mb-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -366,104 +367,6 @@ return (
       ) : (
         <div className="space-y-6 pb-24">
           {filteredPosts.map((p) => (
-  <div key={p.id} className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
-    <div
-      onClick={() => togglePostExpansion(p.id)}
-      className="p-6 cursor-pointer hover:bg-gray-700/50 transition-colors"
-    >
-      <div className="flex items-start justify-between mb-3">
-        <h2 className="text-2xl font-bold text-white flex-1">{p.title}</h2>
-        <div className="flex items-center gap-2 ml-4">
-          <svg className={`w-5 h-5 text-gray-400 transition-transform ${expandedPosts.has(p.id) ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </div>
-      </div>
-      <div className="flex items-center gap-3 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-purple-900 rounded-full flex items-center justify-center border border-purple-700">
-            <svg className="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            </svg>
-          </div>
-          <span className="font-medium text-gray-200">{p.author.username || p.author.email}</span>
-        </div>
-        <span className="text-gray-500">•</span>
-        <span className="text-gray-400">{new Date(p.createdAt).toLocaleString()}</span>
-        {!expandedPosts.has(p.id) && (
-          <>
-            <span className="text-gray-500">•</span>
-            <div className="flex items-center gap-1 text-gray-400">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <span>{countAllReplies(p.replies)}</span>
-            </div>
-          </>
-        )}
-        {p.author.id === currentUser?.id && (
-          <button onClick={() => setEditingPost(p)} className="ml-auto text-sm text-purple-400 hover:text-purple-200">Edit</button>
-        )}
-      </div>
-    </div>
-
-    {expandedPosts.has(p.id) && (
-      <>
-        <div className="px-6 pb-4 border-t border-gray-700">
-          <p className="text-gray-300 leading-relaxed">{p.body}</p>
-        </div>
-
-        <div className="bg-gray-900 px-6 py-4 border-t border-gray-700">
-          <div className="flex items-center gap-2 mb-4">
-            <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <h3 className="font-semibold text-gray-200">
-              {countAllReplies(p.replies)} {countAllReplies(p.replies) === 1 ? 'Reply' : 'Replies'}
-            </h3>
-          </div>
-
-          {p.replies.length > 0 && (
-            <div className="mb-4">
-              {p.replies.map((reply) => (
-                <ReplyComponent
-                  key={reply.id}
-                  reply={reply}
-                  postId={p.id}
-                  isAuthenticated={isAuthenticated}
-                  onCreateReply={handleCreateReply}
-                  depth={0}
-                />
-              ))}
-            </div>
-          )}
-
-          <form onSubmit={(e) => handleMainReply(p.id, e)} className="flex gap-2">
-            <input
-              type="text"
-              placeholder={isAuthenticated ? "Write a reply..." : "Login to reply..."}
-              value={mainReplyBodies[p.id] || ''}
-              onChange={(e) => setMainReplyBodies((prev) => ({ ...prev, [p.id]: e.target.value }))}
-              required
-              className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-white placeholder-gray-500 text-sm"
-              disabled={!isAuthenticated}
-            />
-            <button
-              type="submit"
-              disabled={!isAuthenticated}
-              className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm whitespace-nowrap"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-              </svg>
-              Reply
-            </button>
-          </form>
-        </div>
-      </>
-    )}
-  </div>
-))}
             <div key={p.id} className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
               <div
                 onClick={() => togglePostExpansion(p.id)}
@@ -498,6 +401,9 @@ return (
                         <span>{countAllReplies(p.replies)}</span>
                       </div>
                     </>
+                  )}
+                  {p.author.id === currentUser?.id && (
+                    <button onClick={() => setEditingPost(p)} className="ml-auto text-sm text-purple-400 hover:text-purple-200">Edit</button>
                   )}
                 </div>
               </div>

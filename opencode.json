@@ -8,22 +8,29 @@
         "baseURL": "http://localhost:8080/v1"
       },
       "models": {
-        "gpt-oss-20b-Q8_0": {
-          "name": "gpt-oss-20b-Q8_0",
+        "DeepSeek-R1-0528-Qwen3-8B-Q4_0": {
+          "name": "DeepSeek-R1-0528-Qwen3-8B-Q4_0",
           "limit": {
             "context": 80000,
             "output": 1000000
           }
         },
-        "Ministral-3-3B-Instruct-2512-Q8_0": {
-          "name": "Ministral-3-3B-Instruct-2512-Q8_0",
+        "Qwen3-4B-Instruct-2507-Q4_0": {
+          "name": "Qwen3-4B-Instruct-2507-Q4_0",
           "limit": {
             "context": 80000,
             "output": 1000000
           }
         },
-        "qwen3-4b-thinking-2507-q8_0": {
-          "name": "qwen3-4b-thinking-2507-q8_0",
+        "Qwen3-4B-Thinking-2507-Q4_0": {
+          "name": "Qwen3-4B-Thinking-2507-Q4_0",
+          "limit": {
+            "context": 80000,
+            "output": 1000000
+          }
+        },
+        "gpt-oss-20b-Q4_0": {
+          "name": "gpt-oss-20b-Q4_0",
           "limit": {
             "context": 80000,
             "output": 1000000
